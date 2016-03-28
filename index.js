@@ -1,23 +1,17 @@
-// TODO: Слово пишется как "clastEr". В названии проекта и везде.
-// TODO: Добавить в название проекта префикс "nodejs-"
 // TODO: А этот файл логично назвать "main.js"
 // nodejs при подключении модуля ищет файл {module_name}/index.js
-// TODO: Давай назовем просто "clusterizer". Ато имя слишком заумное.
+
 var clusterfck = require("clusterfck");
 var check = require('check-types');
-// TODO: Вероятно, нет смысла писать с большой буквы имя библиотеки. У них
-// же оно с маленькой написано.
+
 var q = require('q');
 
 module.exports = function(json, propertyName) {
     
-    // TODO: Не используем сокращения в именах переменных
     var temporary = new Array();
     
-    // TODO: Опасно не инициализировать переменную. Это может привести к тому, что она так и останется пустой.
     var clusters = [];
 
-    // TODO: Из контекста и так понятно, что все создается для кластеризации. Нужно более описательное название.
     var createArrayOfProperties = function() {
         for (var i = 0; i < json.length; i++) {
             var data = processProperty(json[i][propertyName]);
@@ -26,7 +20,7 @@ module.exports = function(json, propertyName) {
     };
 
     // TODO: Это можно очень классно заменить на самовызывающуюся функцию
-    // Читаю о самовызывающихся функциях
+    // Читаю о самовызывающихс функциях
     var processProperty = function(property) {
         
         if (check.date(new Date(property))) {
@@ -39,7 +33,6 @@ module.exports = function(json, propertyName) {
     };
 
     var clastirization = function() {
-        // TODO: Camel-case
         var kMeans = new clusterfck.Kmeans();
         clusters = kMeans.cluster(temporary);
     };

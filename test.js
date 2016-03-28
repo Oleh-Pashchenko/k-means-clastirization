@@ -1,7 +1,5 @@
 var request = require("request");
 
-// TODO: Комментарий к тому, что делает этот метод.
-
 // Берем JSON по URL и кластеризуем его
 request("http://google-observer-1.herokuapp.com/api/event/list?kernelIdentifier=55ccc5376675e91100163ec7", function(error, response, body) {
     
