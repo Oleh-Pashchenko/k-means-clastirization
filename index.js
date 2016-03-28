@@ -26,6 +26,7 @@ module.exports = function(json, propertyName) {
     };
 
     // TODO: Это можно очень классно заменить на самовызывающуюся функцию
+    // Читаю о самовызывающихся функциях
     var processProperty = function(property) {
         
         if (check.date(new Date(property))) {
