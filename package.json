@@ -2,7 +2,7 @@
   "name": "nodejs-clusterizer",
   "version": "0.0.1",
   "description": "k-means clastirization",
-  "main": "index.js",
+  "main": "main.js",
   "dependencies": {
     "clusterfck": "^0.6.0",
     "check-types":"*",
