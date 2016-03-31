@@ -8,9 +8,9 @@ request("http://google-observer-1.herokuapp.com/api/event/list?kernelIdentifier=
     var json = JSON.parse(body);
 
     var index = require("./");
-    index(json, "date", function() {
+    index(json, "date").start(function() {
         console.log('error');
-    }).start()
+    })
     .then(function(result) {
         console.log(result);
     });

@@ -7,15 +7,19 @@ var q = require('q');
 // Поэтому во всех методах всегда есть последний параметр - обработчик ошибки. И он должен вызываться всегда при ошибке внутри любого метода. А уже тот, кто вызывает,
 // решает, как обрабатывать ошибку.
 // Прийдется везде try catch в каждую функцию написать?
-module.exports = function(json, propertyName, onError) {
+module.exports = function(json, propertyName) {
 
     var temporary = [],
         clusters = [];
 
-    var createArrayOfProperties = function() {
-        for (var i = 0; i < json.length + 1; i++) {
-            var data = processProperty(json[i][propertyName]);
-            temporary[i] = [data];
+    var createArrayOfProperties = function(error) {
+        try {
+            for (var i = 0; i < json.length + 1; i++) {
+                var data = processProperty(json[i][propertyName]);
+                temporary[i] = [data];
+            }
+        } catch (exception) {
+            error(exception);
         }
     };
 
@@ -25,58 +29,70 @@ module.exports = function(json, propertyName, onError) {
     // А если два места вызова, не будет ли это дублированием кода?
     // А у нас два места вызова? Можно сделать приватной функцией, как описано ниже для другой функции.
     // Если вложить эту функцию в другую то ее не будет видно в другом вызове ?!
-    var processProperty = function(property) {
+    var processProperty = function(error, property) {
+        try {
+            if (check.date(new Date(property))) {
+                var stringData = property.split(' ').join('T');
+                var date = new Date(stringData);
+                var time = date.getTime();
+                var timeStamp = time / 1000;
 
-        if (check.date(new Date(property))) {
-            var stringData = property.split(' ').join('T');
-            var date = new Date(stringData);
-            var time = date.getTime();
-            var timeStamp = time / 1000;
-
-            return timeStamp;
-        } else if (check.nonEmptyString(property)) {
-            // TODO: work with string
-            // TODO: Классная идея. Для тестов возьми текст из чата сисек и очисти его от лишних символов.
-        } else {
-            return property;
+                return timeStamp;
+            } else if (check.nonEmptyString(property)) {
+                // TODO: work with string
+                // TODO: Классная идея. Для тестов возьми текст из чата сисек и очисти его от лишних символов.
+            } else {
+                return property;
+            }
+        } catch (exception) {
+            error(exception);
         }
     };
 
-    var clusterize = function() {
-        var kMeans = new clusterfck.Kmeans();
-        clusters = kMeans.cluster(temporary);
+    var clusterize = function(error) {
+        try {
+            var kMeans = new clusterfck.Kmeans();
+            clusters = kMeans.cluster(temporary);
+        } catch (exception) {
+            error(exception);
+        }
+
     };
 
-    var updateData = function() {
-        var addClusterIdentities = function(clusterIdentity, value) {
-            for (var i = 0; i < json.length + 1; i++) {
-                var data = processProperty(json[i][propertyName]);
-                if (data == value) {
-                    json[i].cluster = clusterIdentity;
+    var updateData = function(error) {
+        try {
+            var addClusterIdentities = function(clusterIdentity, value) {
+                for (var i = 0; i < json.length + 1; i++) {
+                    var data = processProperty(json[i][propertyName]);
+                    if (data == value) {
+                        json[i].cluster = clusterIdentity;
+                    }
                 }
-            }
-        };
+            };
 
-        for (var i = 0; i < clusters.length; i++) {
-            for (var j = 0; j < clusters[i].length; j++) {
-                for (var l = 0; l < clusters[i][j].length; l++) {
-                    addClusterIdentities(i, clusters[i][j][l]);
+            for (var i = 0; i < clusters.length; i++) {
+                for (var j = 0; j < clusters[i].length; j++) {
+                    for (var l = 0; l < clusters[i][j].length; l++) {
+                        addClusterIdentities(i, clusters[i][j][l]);
+                    }
                 }
             }
+        } catch (exception) {
+            error(exception);
         }
     };
 
     return {
-        start: function() {
+        start: function(error) {
+
             return q.all([
-                    createArrayOfProperties(),
-                    clusterize(),
-                    updateData()
+                    createArrayOfProperties(error),
+                    clusterize(error),
+                    updateData(error)
                 ])
                 .then(function() {
                     return json;
-                })
-                .catch(onError);
+                });
         }
     };
 };
