@@ -1,5 +1,5 @@
 var request = require("request");
-var clusterizer = require("./");
+var clusterizer = require("../");
 /**
  * Data clusterization sample.
  * 
