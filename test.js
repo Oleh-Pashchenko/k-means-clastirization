@@ -1,17 +1,25 @@
 var request = require("request");
-
-// Берем JSON по URL и кластеризуем его
-// TODO: Я имею ввиду, что мы можем сделать более приятное описание, которое будет давать понимание пользователю, что это за данные и зачем их кластеризуем. Это как маркетинговый текст.
-// Подумаю над текстом
+var clusterizer = require("./");
+/**
+ * Data clusterization sample.
+ * 
+ * Extracts all events collected during the last period of time 
+ * from the news API and clusterizes them by news item date time.
+ * 
+ * Cluster identifiers are added to resulting data and this 
+ * data is printed to console.
+ * 
+ * TODO: А что, если запрос не отработал или вернул не HTTP 200?
+ */
 request("http://google-observer-1.herokuapp.com/api/event/list?kernelIdentifier=55ccc5376675e91100163ec7", function(error, response, body) {
-    
+    if (error) {
+        throw error;
+    }
     var json = JSON.parse(body);
-
-    var index = require("./");
-    index(json, "date").start(function() {
-        console.log('error');
-    })
-    .then(function(result) {
-        console.log(result);
+    clusterizer(json, "date", function(error, data) {
+        if(error) {
+            throw error;
+        }
+        console.log(data);
     });
 });

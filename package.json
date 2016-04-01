@@ -1,12 +1,11 @@
 {
   "name": "nodejs-clusterizer",
   "version": "0.0.1",
-  "description": "k-means clastirization",
+  "description": "K-Means clusterization for an arbitrary array of JSON objects",
   "main": "main.js",
   "dependencies": {
     "clusterfck": "^0.6.0",
-    "check-types":"*",
-    "q":"*"
+    "check-types":"*"
   },
   "devDependencies": {},
   "scripts": {
