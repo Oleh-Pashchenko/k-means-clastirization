@@ -4,7 +4,9 @@ module.exports = function(items, distanceProperty, callback) {
     this.temporary = [];
     this.clusters = [];
     this.processProperty = function(property) {
-        if (checkTypes.date(new Date(property))) {
+        if(checkTypes.number(property)) {
+            return  property;
+        } else if (checkTypes.date(new Date(property))) {
             var stringData = property.split(' ').join('T');
             var date = new Date(stringData);
             var time = date.getTime();
